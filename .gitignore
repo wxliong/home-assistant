@@ -1,0 +1,51 @@
+# HA Secrets - NEVER upload these
+secrets.yaml
+.storage/auth
+.storage/auth_provider.homeassistant
+.storage/onboarding
+
+# Personal/sensitive data
+known_devices.yaml
+.google.token
+.cloud
+google_assistant.json
+
+# Zigbee2MQTT sensitive files
+zigbee2mqtt/state.json
+zigbee2mqtt/database.db
+zigbee2mqtt/coordinator_backup.json
+
+# HA internal storage and cache
+.storage/
+.cache/
+home-assistant_v2.db
+home-assistant_v2.db-shm
+home-assistant_v2.db-wal
+home-assistant.log
+home-assistant.log.old
+home-assistant.log.1
+home-assistant.log.fault
+
+# Backups
+*.tar
+backups/
+
+# Custom components (optional - uncomment if you don't want to include these)
+# custom_components/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+*.swp
+*.swo
+image/
+www/
+Network/

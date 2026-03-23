@@ -1,0 +1,94 @@
+version: 4
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://core-mosquitto:1883
+  user: addons
+  password: Laew6OVi1aingaefiwooweewoor7saethahwixai2pib1Wienahhooghian4ief2
+serial:
+  port: /dev/ttyUSB0
+  adapter: zstack
+  baudrate: 115200
+  rtscts: false
+advanced:
+  log_level: debug
+  channel: 25
+  network_key:
+    - 107
+    - 29
+    - 200
+    - 166
+    - 159
+    - 161
+    - 211
+    - 126
+    - 180
+    - 128
+    - 210
+    - 37
+    - 104
+    - 81
+    - 10
+    - 98
+  pan_id: 63611
+  ext_pan_id:
+    - 232
+    - 245
+    - 101
+    - 234
+    - 155
+    - 219
+    - 85
+    - 104
+frontend:
+  enabled: true
+  port: 8099
+homeassistant:
+  enabled: true
+devices:
+  '0x54ef441001412026':
+    friendly_name: Balcony
+  '0xa4c138394da0e350':
+    friendly_name: Living Room Cove
+  '0xa4c1383d2c4da0ef':
+    friendly_name: Living Room Downlight 1
+  '0xa4c1388023fdde49':
+    friendly_name: Living Room Downlight 2
+  '0xa4c13805914db526':
+    friendly_name: Living Room Downlight 3
+  '0xa4c1381281048f35':
+    friendly_name: Living Room Downlight 5
+  '0xa4c138635c439712':
+    friendly_name: Living Room Downlight 4
+  '0xa4c138dc745d8a7e':
+    friendly_name: Foyer Downlight
+  '0xa4c138bf06c6d876':
+    friendly_name: Foyer Light Strip
+  '0xa4c1386d425bfa10':
+    friendly_name: Bedroom Light 4 (Near Door)
+  '0xa4c1383f737b2bb7':
+    friendly_name: Bedroom Light 1 (Near Window & Bedhead)
+  '0xa4c13816ec34ae66':
+    friendly_name: Bedroom Light 2 (Near Dresser)
+  '0x54ef441001304cec':
+    friendly_name: Study Room Light
+  '0x54ef44100148ffb1':
+    friendly_name: Living Room Left Switch
+  '0x54ef44100045811f':
+    friendly_name: Study Room Switch
+  '0x54ef441000c9e545':
+    friendly_name: Foyer Switch
+  '0x54ef441000c9f0c9':
+    friendly_name: Coffee Bar Switch
+  '0xa4c138fe2363a043':
+    friendly_name: Coffee Bar Light Strip
+  '0xa4c1382e0fc217dd':
+    friendly_name: Bedroom Bedhead
+  '0x54ef4410009529b7':
+    friendly_name: Bedhead Switch
+  '0x54ef4410014913c9':
+    friendly_name: Living Room Right Switch
+  '0x54ef441000cb8409':
+    friendly_name: Bedroom Switch
+  '0x54ef4410014e14d8':
+    friendly_name: Bedroom Curtain
+blocklist: []

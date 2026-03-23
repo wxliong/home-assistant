@@ -1,0 +1,633 @@
+- sensor:
+    - name: date_string
+      state: >
+        {{ now().strftime('%a, %d %b %Y') }}
+
+    - name: "Updates Count"
+      unique_id: updates_count
+      icon: mdi:arrow-up-bold-circle
+      state: >
+        {{ states.update
+           | selectattr('state','eq','on')
+           | list
+           | count }}
+
+- light:
+    # =========================
+    # BALCONY
+    # switch.living_room_left_switch_left -> light.balcony
+    # =========================
+    - name: "Balcony (Hybrid)"
+      unique_id: balcony_hybrid
+
+      state: "{{ is_state('switch.living_room_left_switch_left', 'on') }}"
+
+      level: "{{ state_attr('light.balcony', 'brightness') | int(0) }}"
+      temperature: "{{ state_attr('light.balcony', 'color_temp') | int(250) }}"
+      hs: >
+        {% if state_attr('light.balcony', 'color_mode') == 'hs' %}
+          {{ state_attr('light.balcony', 'hs_color') }}
+        {% else %}
+          {{ none }}
+        {% endif %}
+
+      turn_on:
+        action: switch.turn_on
+        target:
+          entity_id: switch.living_room_left_switch_left
+
+      turn_off:
+        action: switch.turn_off
+        target:
+          entity_id: switch.living_room_left_switch_left
+
+      set_level:
+        action: light.turn_on
+        target:
+          entity_id: light.balcony
+        data:
+          brightness: "{{ brightness }}"
+
+      set_temperature:
+        action: light.turn_on
+        target:
+          entity_id: light.balcony
+        data:
+          color_temp: "{{ color_temp }}"
+
+      set_hs:
+        action: light.turn_on
+        target:
+          entity_id: light.balcony
+        data:
+          hs_color:
+            - "{{ hs[0] }}"
+            - "{{ hs[1] }}"
+
+    # =========================
+    # BEDROOM - BEDHEAD
+    # switch.bedhead_switch -> light.bedroom_bedhead
+    # =========================
+    - name: "Bedroom Bedhead (Hybrid)"
+      unique_id: bedroom_bedhead_hybrid
+
+      state: "{{ is_state('switch.bedhead_switch', 'on') }}"
+      level: "{{ state_attr('light.bedroom_bedhead', 'brightness') | int(0) }}"
+      temperature: "{{ state_attr('light.bedroom_bedhead', 'color_temp') | int(250) }}"
+
+      hs: >
+        {% if state_attr('light.bedroom_bedhead', 'color_mode') == 'hs' %}
+          {{ state_attr('light.bedroom_bedhead', 'hs_color') }}
+        {% else %}
+          {{ none }}
+        {% endif %}
+
+      turn_on:
+        action: switch.turn_on
+        target:
+          entity_id: switch.bedhead_switch
+
+      turn_off:
+        action: switch.turn_off
+        target:
+          entity_id: switch.bedhead_switch
+
+      set_level:
+        action: light.turn_on
+        target:
+          entity_id: light.bedroom_bedhead
+        data:
+          brightness: "{{ brightness }}"
+
+      set_temperature:
+        action: light.turn_on
+        target:
+          entity_id: light.bedroom_bedhead
+        data:
+          color_temp: "{{ color_temp }}"
+
+      set_hs:
+        action: light.turn_on
+        target:
+          entity_id: light.bedroom_bedhead
+        data:
+          hs_color:
+            - "{{ hs[0] }}"
+            - "{{ hs[1] }}"
+
+    # =========================
+    # BEDROOM RIGHT (SWITCH CONTROLS 2 LIGHT ENTITIES)
+    # switch.bedroom_switch_right -> light.bedroom_light_1_near_window_bedhead
+    # switch.bedroom_switch_right -> light.bedroom_light_2_near_dresser
+    # =========================
+    - name: "Bedroom Right (Hybrid)"
+      unique_id: bedroom_right_hybrid
+
+      # primary light for reading attributes
+      state: "{{ is_state('switch.bedroom_switch_right', 'on') }}"
+
+      level: "{{ state_attr('light.bedroom_light_1_near_window_bedhead', 'brightness') | int(0) }}"
+      temperature: "{{ state_attr('light.bedroom_light_1_near_window_bedhead', 'color_temp') | int(250) }}"
+
+      hs: >
+        {% if state_attr('light.bedroom_light_1_near_window_bedhead', 'color_mode') == 'hs' %}
+          {{ state_attr('light.bedroom_light_1_near_window_bedhead', 'hs_color') }}
+        {% else %}
+          {{ none }}
+        {% endif %}
+
+      turn_on:
+        action: switch.turn_on
+        target:
+          entity_id: switch.bedroom_switch_right
+
+      turn_off:
+        action: switch.turn_off
+        target:
+          entity_id: switch.bedroom_switch_right
+
+      set_level:
+        action: light.turn_on
+        target:
+          entity_id:
+            - light.bedroom_light_1_near_window_bedhead
+            - light.bedroom_light_2_near_dresser
+        data:
+          brightness: "{{ brightness }}"
+
+      set_temperature:
+        action: light.turn_on
+        target:
+          entity_id:
+            - light.bedroom_light_1_near_window_bedhead
+            - light.bedroom_light_2_near_dresser
+        data:
+          color_temp: "{{ color_temp }}"
+
+      set_hs:
+        action: light.turn_on
+        target:
+          entity_id:
+            - light.bedroom_light_1_near_window_bedhead
+            - light.bedroom_light_2_near_dresser
+        data:
+          hs_color:
+            - "{{ hs[0] }}"
+            - "{{ hs[1] }}"
+
+    # =========================
+    # BEDROOM LEFT
+    # switch.bedroom_switch_left -> light.bedroom_light_3_near_window_fan
+    # switch.bedroom_switch_left -> light.bedroom_light_4_near_door
+    # =========================
+    - name: "Bedroom Left (Hybrid)"
+      unique_id: bedroom_left_hybrid
+
+      state: "{{ is_state('switch.bedroom_switch_left', 'on') }}"
+      level: "{{ state_attr('light.bedroom_light_4_near_door', 'brightness') | int(0) }}"
+      temperature: "{{ state_attr('light.bedroom_light_4_near_door', 'color_temp') | int(250) }}"
+
+      hs: >
+        {% if state_attr('light.bedroom_light_4_near_door', 'color_mode') == 'hs' %}
+          {{ state_attr('light.bedroom_light_4_near_door', 'hs_color') }}
+        {% else %}
+          {{ none }}
+        {% endif %}
+
+      turn_on:
+        action: switch.turn_on
+        target:
+          entity_id: switch.bedroom_switch_left
+
+      turn_off:
+        action: switch.turn_off
+        target:
+          entity_id: switch.bedroom_switch_left
+
+      set_level:
+        action: light.turn_on
+        target:
+          #entity_id: light.bedroom_light_3_near_window_fan
+          entity_id: light.bedroom_light_4_near_door
+        data:
+          brightness: "{{ brightness }}"
+
+      set_temperature:
+        action: light.turn_on
+        target:
+          #entity_id: light.bedroom_light_3_near_window_fan
+          entity_id: light.bedroom_light_4_near_door
+        data:
+          color_temp: "{{ color_temp }}"
+
+      set_hs:
+        action: light.turn_on
+        target:
+          #entity_id: light.bedroom_light_3_near_window_fan
+          entity_id: light.bedroom_light_4_near_door
+        data:
+          hs_color:
+            - "{{ hs[0] }}"
+            - "{{ hs[1] }}"
+
+    # =========================
+    # COFFEE BAR STRIP
+    # switch.coffee_bar_switch_left -> light.coffee_bar_light_strip
+    # =========================
+    - name: "Coffee Bar Strip (Hybrid)"
+      unique_id: coffee_bar_strip_hybrid
+
+      state: "{{ is_state('switch.coffee_bar_switch_left', 'on') }}"
+      level: "{{ state_attr('light.coffee_bar_light_strip', 'brightness') | int(0) }}"
+      temperature: "{{ state_attr('light.coffee_bar_light_strip', 'color_temp') | int(250) }}"
+
+      hs: >
+        {% if state_attr('light.coffee_bar_light_strip', 'color_mode') == 'hs' %}
+          {{ state_attr('light.coffee_bar_light_strip', 'hs_color') }}
+        {% else %}
+          {{ none }}
+        {% endif %}
+
+      turn_on:
+        action: switch.turn_on
+        target:
+          entity_id: switch.coffee_bar_switch_left
+
+      turn_off:
+        action: switch.turn_off
+        target:
+          entity_id: switch.coffee_bar_switch_left
+
+      set_level:
+        action: light.turn_on
+        target:
+          entity_id: light.coffee_bar_light_strip
+        data:
+          brightness: "{{ brightness }}"
+
+      set_temperature:
+        action: light.turn_on
+        target:
+          entity_id: light.coffee_bar_light_strip
+        data:
+          color_temp: "{{ color_temp }}"
+
+      set_hs:
+        action: light.turn_on
+        target:
+          entity_id: light.coffee_bar_light_strip
+        data:
+          hs_color:
+            - "{{ hs[0] }}"
+            - "{{ hs[1] }}"
+
+    # =========================
+    # COFFEE BAR CEILING (NO LIGHT ENTITY) - ON/OFF only
+    # =========================
+    - name: "Coffee Bar Ceiling (Switch Only)"
+      unique_id: coffee_bar_ceiling_switch_only
+      state: "{{ is_state('switch.coffee_bar_switch_right', 'on') }}"
+
+      turn_on:
+        action: switch.turn_on
+        target:
+          entity_id: switch.coffee_bar_switch_right
+
+      turn_off:
+        action: switch.turn_off
+        target:
+          entity_id: switch.coffee_bar_switch_right
+
+    # =========================
+    # FOYER DOWNLIGHT
+    # =========================
+    - name: "Foyer Downlight (Hybrid)"
+      unique_id: foyer_downlight_hybrid
+
+      state: "{{ is_state('switch.foyer_switch_right', 'on') }}"
+      level: "{{ state_attr('light.foyer_downlight', 'brightness') | int(0) }}"
+      temperature: "{{ state_attr('light.foyer_downlight', 'color_temp') | int(250) }}"
+
+      hs: >
+        {% if state_attr('light.foyer_downlight', 'color_mode') == 'hs' %}
+          {{ state_attr('light.foyer_downlight', 'hs_color') }}
+        {% else %}
+          {{ none }}
+        {% endif %}
+
+      turn_on:
+        action: switch.turn_on
+        target:
+          entity_id: switch.foyer_switch_right
+
+      turn_off:
+        action: switch.turn_off
+        target:
+          entity_id: switch.foyer_switch_right
+
+      set_level:
+        action: light.turn_on
+        target:
+          entity_id: light.foyer_downlight
+        data:
+          brightness: "{{ brightness }}"
+
+      set_temperature:
+        action: light.turn_on
+        target:
+          entity_id: light.foyer_downlight
+        data:
+          color_temp: "{{ color_temp }}"
+
+      set_hs:
+        action: light.turn_on
+        target:
+          entity_id: light.foyer_downlight
+        data:
+          hs_color:
+            - "{{ hs[0] }}"
+            - "{{ hs[1] }}"
+
+    # =========================
+    # FOYER STRIP
+    # =========================
+    - name: "Foyer Strip (Hybrid)"
+      unique_id: foyer_strip_hybrid
+
+      state: "{{ is_state('switch.foyer_switch_left', 'on') }}"
+      level: "{{ state_attr('light.foyer_light_strip', 'brightness') | int(0) }}"
+      temperature: "{{ state_attr('light.foyer_light_strip', 'color_temp') | int(250) }}"
+
+      hs: >
+        {% if state_attr('light.foyer_light_strip', 'color_mode') == 'hs' %}
+          {{ state_attr('light.foyer_light_strip', 'hs_color') }}
+        {% else %}
+          {{ none }}
+        {% endif %}
+
+      turn_on:
+        action: switch.turn_on
+        target:
+          entity_id: switch.foyer_switch_left
+
+      turn_off:
+        action: switch.turn_off
+        target:
+          entity_id: switch.foyer_switch_left
+
+      set_level:
+        action: light.turn_on
+        target:
+          entity_id: light.foyer_light_strip
+        data:
+          brightness: "{{ brightness }}"
+
+      set_temperature:
+        action: light.turn_on
+        target:
+          entity_id: light.foyer_light_strip
+        data:
+          color_temp: "{{ color_temp }}"
+
+      set_hs:
+        action: light.turn_on
+        target:
+          entity_id: light.foyer_light_strip
+        data:
+          hs_color:
+            - "{{ hs[0] }}"
+            - "{{ hs[1] }}"
+
+    # =========================
+    # LIVING ROOM COVE
+    # =========================
+    - name: "Living Room Cove (Hybrid)"
+      unique_id: living_room_cove_hybrid
+
+      state: "{{ is_state('switch.living_room_left_switch_right', 'on') }}"
+      level: "{{ state_attr('light.living_room_cove', 'brightness') | int(0) }}"
+      temperature: "{{ state_attr('light.living_room_cove', 'color_temp') | int(250) }}"
+
+      hs: >
+        {% if state_attr('light.living_room_cove', 'color_mode') == 'hs' %}
+          {{ state_attr('light.living_room_cove', 'hs_color') }}
+        {% else %}
+          {{ none }}
+        {% endif %}
+
+      turn_on:
+        action: switch.turn_on
+        target:
+          entity_id: switch.living_room_left_switch_right
+
+      turn_off:
+        action: switch.turn_off
+        target:
+          entity_id: switch.living_room_left_switch_right
+
+      set_level:
+        action: light.turn_on
+        target:
+          entity_id: light.living_room_cove
+        data:
+          brightness: "{{ brightness }}"
+
+      set_temperature:
+        action: light.turn_on
+        target:
+          entity_id: light.living_room_cove
+        data:
+          color_temp: "{{ color_temp }}"
+
+      set_hs:
+        action: light.turn_on
+        target:
+          entity_id: light.living_room_cove
+        data:
+          hs_color:
+            - "{{ hs[0] }}"
+            - "{{ hs[1] }}"
+
+    # =========================
+    # LIVING ROOM PENDANT
+    # =========================
+    - name: "Living Room Pendant (Hybrid)"
+      unique_id: living_room_pendant_hybrid
+      state: "{{ is_state('switch.living_room_right_switch_center', 'on') }}"
+
+      turn_on:
+        action: switch.turn_on
+        target:
+          entity_id: switch.living_room_right_switch_center
+
+      turn_off:
+        action: switch.turn_off
+        target:
+          entity_id: switch.living_room_right_switch_center
+
+    # =========================
+    # LIVING ROOM DOWNLIGHTS 1-3
+    # =========================
+    - name: "Living Room Downlights 1-3 (Hybrid)"
+      unique_id: living_room_downlights_1_3_hybrid
+
+      # primary light for reading attributes
+      state: "{{ is_state('switch.living_room_right_switch_left', 'on') }}"
+      level: "{{ state_attr('light.living_room_downlight_1', 'brightness') | int(0) }}"
+      temperature: "{{ state_attr('light.living_room_downlight_1', 'color_temp') | int(250) }}"
+
+      hs: >
+        {% if state_attr('light.living_room_downlight_1', 'color_mode') == 'hs' %}
+          {{ state_attr('light.living_room_downlight_1', 'hs_color') }}
+        {% else %}
+          {{ none }}
+        {% endif %}
+
+      turn_on:
+        action: switch.turn_on
+        target:
+          entity_id: switch.living_room_right_switch_left
+
+      turn_off:
+        action: switch.turn_off
+        target:
+          entity_id: switch.living_room_right_switch_left
+
+      set_level:
+        action: light.turn_on
+        target:
+          entity_id:
+            - light.living_room_downlight_1
+            - light.living_room_downlight_2
+            - light.living_room_downlight_3
+        data:
+          brightness: "{{ brightness }}"
+
+      set_temperature:
+        action: light.turn_on
+        target:
+          entity_id:
+            - light.living_room_downlight_1
+            - light.living_room_downlight_2
+            - light.living_room_downlight_3
+        data:
+          color_temp: "{{ color_temp }}"
+
+      set_hs:
+        action: light.turn_on
+        target:
+          entity_id:
+            - light.living_room_downlight_1
+            - light.living_room_downlight_2
+            - light.living_room_downlight_3
+        data:
+          hs_color:
+            - "{{ hs[0] }}"
+            - "{{ hs[1] }}"
+
+    # =========================
+    # LIVING ROOM DOWNLIGHTS 4-5
+    # =========================
+    - name: "Living Room Downlights 4-5 (Hybrid)"
+      unique_id: living_room_downlights_4_5_hybrid
+
+      # primary light for reading attributes
+      state: "{{ is_state('switch.living_room_right_switch_right', 'on') }}"
+      level: "{{ state_attr('light.living_room_downlight_4', 'brightness') | int(0) }}"
+      temperature: "{{ state_attr('light.living_room_downlight_4', 'color_temp') | int(250) }}"
+
+      hs: >
+        {% if state_attr('light.living_room_downlight_4', 'color_mode') == 'hs' %}
+          {{ state_attr('light.living_room_downlight_4', 'hs_color') }}
+        {% else %}
+          {{ none }}
+        {% endif %}
+
+      turn_on:
+        action: switch.turn_on
+        target:
+          entity_id: switch.living_room_right_switch_right
+
+      turn_off:
+        action: switch.turn_off
+        target:
+          entity_id: switch.living_room_right_switch_right
+
+      set_level:
+        action: light.turn_on
+        target:
+          entity_id:
+            - light.living_room_downlight_4
+            - light.living_room_downlight_5
+        data:
+          brightness: "{{ brightness }}"
+
+      set_temperature:
+        action: light.turn_on
+        target:
+          entity_id:
+            - light.living_room_downlight_4
+            - light.living_room_downlight_5
+        data:
+          color_temp: "{{ color_temp }}"
+
+      set_hs:
+        action: light.turn_on
+        target:
+          entity_id:
+            - light.living_room_downlight_4
+            - light.living_room_downlight_5
+        data:
+          hs_color:
+            - "{{ hs[0] }}"
+            - "{{ hs[1] }}"
+
+    # =========================
+    # STUDY ROOM
+    # =========================
+    - name: "Study Room (Hybrid)"
+      unique_id: study_room_hybrid
+
+      state: "{{ is_state('switch.study_room_switch', 'on') }}"
+      level: "{{ state_attr('light.study_room_light', 'brightness') | int(0) }}"
+      temperature: "{{ state_attr('light.study_room_light', 'color_temp') | int(250) }}"
+
+      hs: >
+        {% if state_attr('light.study_room_light', 'color_mode') == 'hs' %}
+          {{ state_attr('light.study_room_light', 'hs_color') }}
+        {% else %}
+          {{ none }}
+        {% endif %}
+
+      turn_on:
+        action: switch.turn_on
+        target:
+          entity_id: switch.study_room_switch
+
+      turn_off:
+        action: switch.turn_off
+        target:
+          entity_id: switch.study_room_switch
+
+      set_level:
+        action: light.turn_on
+        target:
+          entity_id: light.study_room_light
+        data:
+          brightness: "{{ brightness }}"
+
+      set_temperature:
+        action: light.turn_on
+        target:
+          entity_id: light.study_room_light
+        data:
+          color_temp: "{{ color_temp }}"
+
+      set_hs:
+        action: light.turn_on
+        target:
+          entity_id: light.study_room_light
+        data:
+          hs_color:
+            - "{{ hs[0] }}"
+            - "{{ hs[1] }}"

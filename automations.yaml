@@ -1,0 +1,176 @@
+- id: '1768970905726'
+  alias: Arrival Automation
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.home_occupied
+    from: 'off'
+    to: 'on'
+    for: 00:02:00
+  conditions:
+  - condition: state
+    entity_id: input_boolean.arrival_cooldown
+    state: 'off'
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: person.wx
+      state: home
+    - condition: state
+      entity_id: person.zy
+      state: home
+  actions:
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.arrival_cooldown
+  - action: switch.turn_on
+    target:
+      entity_id:
+      - switch.coffee_bar_switch_left
+      - switch.foyer_switch_left
+      - switch.foyer_switch_right
+      - switch.living_room_left_switch_right
+      - switch.living_room_left_switch_center
+    data: {}
+  - action: notify.mobile_app_wxs_iphone
+    data:
+      title: "\U0001F3E0 Arrival"
+      message: "{% set wx = is_state('person.wx','home') %} {% set zy = is_state('person.zy','home')
+        %} {% if wx and zy %}\n  Welcome home, wx & zy! Ambience mood is on ✨\n{%
+        elif wx %}\n  Welcome home, wx! Ambience mood is on ✨\n{% elif zy %}\n  Welcome
+        home, zy! Ambience mood is on ✨\n{% endif %}\n"
+  - action: notify.mobile_app_zys_iphone
+    data:
+      title: "\U0001F3E0 Arrival"
+      message: "{% set wx = is_state('person.wx','home') %} {% set zy = is_state('person.zy','home')
+        %} {% if wx and zy %}\n  Welcome home, wx & zy! Ambience mood is on ✨\n{%
+        elif wx %}\n  Welcome home, wx! Ambience mood is on ✨\n{% elif zy %}\n  Welcome
+        home, zy! Ambience mood is on ✨\n{% endif %}\n"
+  - action: script.turn_on
+    target:
+      entity_id: script.arrival_lg_tv_spotify
+    enabled: false
+  - delay: 00:30:00
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.arrival_cooldown
+  mode: single
+- id: '1768971315343'
+  alias: Away - Last Person Left
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.home_occupied
+    to: 'off'
+    for:
+      minutes: 10
+  actions:
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.home_occupied
+  - action: media_player.turn_off
+    target:
+      entity_id: media_player.living_room_tv_oled55g4
+    data: {}
+  - action: switch.turn_off
+    target:
+      entity_id: switch.master_switch
+  - action: notify.mobile_app_wxs_iphone
+    data:
+      title: "\U0001F3E0 Away Mode Activated"
+      message: Everyone has left. All lights have been turned off.
+  - action: notify.mobile_app_zys_iphone
+    data:
+      title: "\U0001F3E0 Away Mode Activated"
+      message: Everyone has left. All lights have been turned off.
+  mode: single
+- id: '1768979268017'
+  alias: LG TV Auto Turn On
+  description: ''
+  triggers:
+  - device_id: 1456ecae0af3aa045737d80f4a819e5f
+    domain: webostv
+    type: webostv.turn_on
+    metadata: {}
+    trigger: device
+  conditions: []
+  actions:
+  - action: wake_on_lan.send_magic_packet
+    data:
+      mac: 34:E6:E6:AB:60:EA
+      broadcast_address: 192.168.0.255
+      broadcast_port: 9
+  mode: single
+- id: '1769251047154'
+  alias: Notify - Home & Work Arrive or Leave
+  description: ''
+  triggers:
+  - entity_id:
+    - person.zy
+    - person.wx
+    zone: zone.home
+    event: enter
+    trigger: zone
+  - entity_id:
+    - person.zy
+    - person.wx
+    zone: zone.home
+    event: leave
+    trigger: zone
+  - entity_id:
+    - person.zy
+    - person.wx
+    zone: zone.wx_work
+    event: enter
+    trigger: zone
+  - entity_id:
+    - person.zy
+    - person.wx
+    zone: zone.wx_work
+    event: leave
+    trigger: zone
+  - entity_id:
+    - person.zy
+    - person.wx
+    zone: zone.zy_work
+    event: enter
+    trigger: zone
+  - entity_id:
+    - person.zy
+    - person.wx
+    zone: zone.zy_work
+    event: leave
+    trigger: zone
+  actions:
+  - variables:
+      who: '{% if trigger.entity_id == ''person.zy'' %}zy {% elif trigger.entity_id
+        == ''person.wx'' %}wx {% else %}Someone{% endif %}
+
+        '
+      where: '{% if trigger.zone.entity_id == ''zone.home'' %}Home {% elif trigger.zone.entity_id
+        == ''zone.zy_work'' %}Work zy {% elif trigger.zone.entity_id == ''zone.wx_work''
+        %}Work wx {% else %}a zone{% endif %}
+
+        '
+      action_word: '{% if trigger.event == ''enter'' %}arrived at {% elif trigger.event
+        == ''leave'' %}left {% else %}updated location at{% endif %}
+
+        '
+  - data:
+      title: Location update
+      message: '{{ who }} {{ action_word }} {{ where }}.'
+    action: notify.mobile_app_zys_iphone
+  - data:
+      title: Location update
+      message: '{{ who }} {{ action_word }} {{ where }}.'
+    action: notify.mobile_app_wxs_iphone
+  mode: queued
+- id: '1769597357411'
+  alias: Open Curtains at Set Time
+  description: Open curtains based on helper time
+  triggers:
+  - at: input_datetime.curtain_open_time
+    trigger: time
+  actions:
+  - target:
+      entity_id: cover.bedroom_curtain
+    action: cover.open_cover
+  mode: single
