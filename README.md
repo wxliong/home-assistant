@@ -4,16 +4,16 @@ A self-hosted smart home automation platform built on **Home Assistant**, runnin
 
 ---
 
-## 📸 Dashboard Preview
+## Dashboard Preview
 
 > *3D interactive floor plan with clickable device controls*
 
 <!-- Replace the line below with your actual screenshot -->
-![3D Floor Plan Dashboard](screenshots/floorplan.png)
+![3D Floor Plan Dashboard](screenshots/Preview.jpeg)
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Component | Details |
 |---|---|
@@ -22,11 +22,12 @@ A self-hosted smart home automation platform built on **Home Assistant**, runnin
 | Zigbee Coordinator | Sonoff Zigbee 3.0 USB Dongle |
 | Zigbee Stack | Zigbee2MQTT |
 | Remote Access | Cloudflare Tunnel |
+| Floor Plan Design | Sweet Home 3D |
 | Dashboard | Custom Lovelace UI with 3D floor plan |
 
 ---
 
-## 📦 Devices
+## Devices
 
 - **Smart Switches** — Zigbee-controlled wall switches throughout the home
 - **LED Strip Controllers** — Zigbee-controlled ambient lighting
@@ -35,20 +36,20 @@ A self-hosted smart home automation platform built on **Home Assistant**, runnin
 
 ---
 
-## ⚡ Automations
+## Automations
 
-### 🏡 Arrival Scene
+### Arrival Scene
 Triggered when a person arrives home. Automatically:
 - Turns on the TV
 - Plays music
 - Sets lighting mood based on time of day
 
-### 🚪 Departure Scene
+### Departure Scene
 Triggered when all occupants leave home. Automatically:
 - Turns off all devices
 - Ensures no standby power waste
 
-### 🌅 Morning Scene
+### Morning Scene
 Scheduled morning routine that:
 - Opens curtains
 - Turns on specific lights and appliances
@@ -56,19 +57,19 @@ Scheduled morning routine that:
 
 ---
 
-## 🗺️ Custom 3D Floor Plan Dashboard
+## Custom 3D Floor Plan Dashboard
 
 Built a fully interactive 3D floor plan using a custom Lovelace card, allowing room-by-room control of all devices via clickable icons overlaid on the floor plan. Replaces the default entity-list UI with a spatial, intuitive interface.
 
 ---
 
-## 🔐 Remote Access
+## Remote Access
 
 Secure remote access configured via **Cloudflare Tunnel** — no open ports, no VPN required. The Home Assistant instance is accessible externally through a private domain without exposing the Raspberry Pi directly to the internet.
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 .
@@ -85,6 +86,6 @@ Secure remote access configured via **Cloudflare Tunnel** — no open ports, no 
 
 ---
 
-## ⚠️ Security Notes
+## Security Notes
 
 All secrets, tokens, API keys, and personal credentials are managed via `secrets.yaml` and are **not included** in this repository. IP addresses and location data have been removed from all config files.
